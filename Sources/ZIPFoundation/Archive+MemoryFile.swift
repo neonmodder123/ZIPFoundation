@@ -102,7 +102,7 @@ private func fileFromCookie(cookie: UnsafeRawPointer) -> Archive.MemoryFile {
     return Unmanaged<Archive.MemoryFile>.fromOpaque(cookie).takeUnretainedValue()
 }
 
-private func closeStub(_ cookie: UnsafeMutableRawPointer?) -> Int32 {
+private let closeStub: @convention(c) (UnsafeMutableRawPointer?) -> Int32 = { cookie in
     if let cookie = cookie {
         Unmanaged<Archive.MemoryFile>.fromOpaque(cookie).release()
     }
@@ -111,25 +111,19 @@ private func closeStub(_ cookie: UnsafeMutableRawPointer?) -> Int32 {
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(visionOS) || os(watchOS)
 
-private func readStub(_ cookie: UnsafeMutableRawPointer?,
-                      _ bytePtr: UnsafeMutablePointer<Int8>?,
-                      _ count: Int32) -> Int32 {
+private let readStub: @convention(c) (UnsafeMutableRawPointer?, UnsafeMutablePointer<Int8>?, Int32) -> Int32 = { cookie, bytePtr, count in
     guard let cookie = cookie, let bytePtr = bytePtr else { return 0 }
     return Int32(fileFromCookie(cookie: cookie).readData(
                     buffer: UnsafeMutableRawBufferPointer(start: bytePtr, count: Int(count))))
 }
 
-private func writeStub(_ cookie: UnsafeMutableRawPointer?,
-                       _ bytePtr: UnsafePointer<Int8>?,
-                       _ count: Int32) -> Int32 {
+private let writeStub: @convention(c) (UnsafeMutableRawPointer?, UnsafePointer<Int8>?, Int32) -> Int32 = { cookie, bytePtr, count in
     guard let cookie = cookie, let bytePtr = bytePtr else { return 0 }
     return Int32(fileFromCookie(cookie: cookie).writeData(
                     buffer: UnsafeRawBufferPointer(start: bytePtr, count: Int(count))))
 }
 
-private func seekStub(_ cookie: UnsafeMutableRawPointer?,
-                      _ offset: fpos_t,
-                      _ whence: Int32) -> fpos_t {
+private let seekStub: @convention(c) (UnsafeMutableRawPointer?, fpos_t, Int32) -> fpos_t = { cookie, offset, whence in
     guard let cookie = cookie else { return 0 }
     return fpos_t(fileFromCookie(cookie: cookie).seek(offset: Int(offset), whence: whence))
 }

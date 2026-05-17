@@ -452,6 +452,9 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				ONLY_ACTIVE_ARCH = YES;
+				"ARCHS[sdk=iphoneos*]" = "arm64 arm64e";
+				"ARCHS[sdk=appletvos*]" = "arm64 arm64e";
+				"ARCHS[sdk=xros*]" = "arm64 arm64e";
 				OTHER_SWIFT_FLAGS = "-DXcode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "";
@@ -538,6 +541,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
+				"ARCHS[sdk=iphoneos*]" = "arm64 arm64e";
+				"ARCHS[sdk=appletvos*]" = "arm64 arm64e";
+				"ARCHS[sdk=xros*]" = "arm64 arm64e";
 				OTHER_SWIFT_FLAGS = "-DXcode";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "";
